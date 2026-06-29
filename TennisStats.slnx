@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TennisStats.Api/TennisStats.Api.csproj" />
+  <Project Path="TennisStats.Tests/TennisStats.Tests.csproj" />
+</Solution>
