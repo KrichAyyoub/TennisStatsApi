@@ -1,100 +1,100 @@
-# API Tennis Stats (.NET 10 / ASP.NET Core)
+# Tennis Stats API (.NET 10 / ASP.NET Core)
 
-Ce projet est une API REST complète construite à partir de zéro avec **.NET 10 (ASP.NET Core / C#)** pour exposer et gérer des statistiques de joueurs de tennis. L'application charge un jeu de données initial en mémoire au démarrage et permet d'ajouter, de consulter, et de supprimer des joueurs de manière thread-safe.
-
----
-
-## 🛠️ Stack Technique
-
-- **Framework** : .NET 10.0 (ASP.NET Core Web API)
-- **Langage** : C# 14
-- **Documentation API** : OpenAPI / Swagger via `Swashbuckle.AspNetCore`
-- **Tests** : xUnit, Moq, Microsoft.AspNetCore.Mvc.Testing (pour les tests d'intégration)
+This project is a complete REST API built from scratch using **.NET 10 (ASP.NET Core / C#)** to expose and manage tennis player statistics. The application loads an initial dataset in memory upon startup and allows thread-safe CRUD operations.
 
 ---
 
-## 📁 Architecture du Projet
+## 🛠️ Tech Stack
 
-Le projet respecte une architecture en couches propre et découplée :
+- **Framework**: .NET 10.0 (ASP.NET Core Web API)
+- **Language**: C# 14
+- **API Documentation**: OpenAPI / Swagger via `Swashbuckle.AspNetCore`
+- **Testing**: xUnit, Moq, Microsoft.AspNetCore.Mvc.Testing (for E2E integration testing)
+
+---
+
+## 📁 Project Architecture
+
+The project follows a clean, decoupled layered architecture:
 
 ```
-TennisStats.slnx                       # Solution .NET 10 (XML Solution format)
-global.json                            # Épinglage du SDK .NET 10.0.203
-nuget.config                           # Configuration NuGet pour limiter les packages au flux officiel
-TennisStats.Api/                       # Projet Web API principal
-  ├── Controllers/                     # Contrôleurs HTTP (PlayersController, StatsController, HealthController)
-  ├── Models/                          # Modèles de données POCO (Player, CountryInfo, PlayerData)
-  ├── DTOs/                            # Objets de transfert de données (Requêtes/Réponses)
-  ├── Services/                        # Logique métier (tri, calcul IMC moyen, médiane, win ratio par pays)
-  ├── Repositories/                    # Accès aux données en mémoire (InMemoryPlayerRepository - thread-safe)
-  ├── Exceptions/                      # Exceptions personnalisées (PlayerNotFoundException, ValidationException)
-  ├── Middleware/                      # Middleware de capture globale des exceptions
+TennisStats.slnx                       # .NET 10 Solution file (XML format)
+global.json                            # Pins the .NET SDK version to 10.0.203
+nuget.config                           # NuGet configuration limiting feeds to official nuget.org
+TennisStats.Api/                       # Main Web API project
+  ├── Controllers/                     # HTTP Controllers (PlayersController, StatsController, HealthController)
+  ├── Models/                          # POCO Data Models (Player, CountryInfo, PlayerData)
+  ├── DTOs/                            # Data Transfer Objects (Requests/Responses)
+  ├── Services/                        # Business Logic (sorting, average BMI, median height, country win ratios)
+  ├── Repositories/                    # In-memory thread-safe data access (InMemoryPlayerRepository)
+  ├── Exceptions/                      # Custom Exceptions (PlayerNotFoundException, ValidationException)
+  ├── Middleware/                      # Global Exception Handling Middleware
   ├── data/
-  │    └── players.json                # Fichier de données initiales (Seed)
-  └── Program.cs                       # Point d'entrée de l'application & configuration des services
-TennisStats.Tests/                     # Projet de Tests Unitaires et d'Intégration
-  ├── Services/                        # Tests unitaires pour PlayerService
-  ├── Controllers/                     # Tests unitaires pour PlayersController
-  └── IntegrationTests/                # Tests d'intégration de bout en bout (WebApplicationFactory)
+  │    └── players.json                # Seed dataset JSON file
+  └── Program.cs                       # App entry point, dependency injection, and middleware configuration
+TennisStats.Tests/                     # Testing project
+  ├── Services/                        # Unit tests for PlayerService
+  ├── Controllers/                     # Unit tests for PlayersController
+  └── IntegrationTests/                # End-to-end integration tests (WebApplicationFactory)
 ```
 
 ---
 
-## 🚀 Lancement Local
+## 🚀 Running Locally
 
-### Prérequis
-- SDK .NET 10.0 installé (`dotnet --version` doit afficher `10.0.x`).
+### Prerequisites
+- .NET 10.0 SDK installed (`dotnet --version` should display `10.0.x`).
 
-### Lancement de l'API
-1. Restaurez les packages NuGet :
+### Running the API
+1. Restore NuGet packages:
    ```bash
    dotnet restore
    ```
-2. Lancez l'API en local :
+2. Run the API:
    ```bash
    dotnet run --project TennisStats.Api --urls "http://localhost:5000"
    ```
-3. L'application démarre et expose :
-   - L'API REST : `http://localhost:5000`
-   - La documentation interactive Swagger UI : `http://localhost:5000/swagger`
+3. The application will start and expose:
+   - The REST API: `http://localhost:5000`
+   - Interactive Swagger UI: `http://localhost:5000/swagger`
 
 ---
 
-## 🧪 Lancement des Tests
+## 🧪 Running Tests
 
-Pour exécuter la suite complète de 25 tests unitaires et d'intégration :
+To run the complete suite of 25 unit and integration tests:
 ```bash
 dotnet test
 ```
 
 ---
 
-## 📞 Endpoints API & Exemples Curl
+## 📞 API Endpoints & Curl Examples
 
 ### 1. Healthcheck
-- **Méthode** : `GET`
-- **Route** : `/health`
-- **Description** : Retourne le statut de l'application.
-- **Requête** :
+- **Method**: `GET`
+- **Route**: `/health`
+- **Description**: Returns the API health status.
+- **Request**:
   ```bash
   curl -s http://localhost:5000/health
   ```
-- **Réponse** :
+- **Response**:
   ```json
   {"status":"ok"}
   ```
 
 ---
 
-### 2. Récupérer tous les joueurs (triés par points décroissants)
-- **Méthode** : `GET`
-- **Route** : `/api/players`
-- **Paramètres Query** (Optionnel) : `sex` (valeurs possibles : `M` ou `F`)
-- **Requête** :
+### 2. Retrieve All Players (Sorted by points descending)
+- **Method**: `GET`
+- **Route**: `/api/players`
+- **Query Parameters** (Optional): `sex` (values: `M` or `F`)
+- **Request**:
   ```bash
   curl -s http://localhost:5000/api/players
   ```
-- **Réponse** (extrait) :
+- **Response** (extract):
   ```json
   [
     {
@@ -112,14 +112,14 @@ dotnet test
 
 ---
 
-### 3. Récupérer les statistiques globales
-- **Méthode** : `GET`
-- **Route** : `/api/players/stats` *(ou via l'alias `/api/stats`)*
-- **Requête** :
+### 3. Retrieve Global Statistics
+- **Method**: `GET`
+- **Route**: `/api/players/stats` *(or via the alias `/api/stats`)*
+- **Request**:
   ```bash
   curl -s http://localhost:5000/api/players/stats
   ```
-- **Réponse** :
+- **Response**:
   ```json
   {
     "countryWithBestWinRatio": { "countryCode": "SRB", "winRatio": 1 },
@@ -130,14 +130,14 @@ dotnet test
 
 ---
 
-### 4. Récupérer un joueur par ID
-- **Méthode** : `GET`
-- **Route** : `/api/players/{id}`
-- **Requête** :
+### 4. Retrieve a Player by ID
+- **Method**: `GET`
+- **Route**: `/api/players/{id}`
+- **Request**:
   ```bash
   curl -s http://localhost:5000/api/players/17
   ```
-- **Réponse** :
+- **Response**:
   ```json
   {
     "id": 17,
@@ -151,7 +151,7 @@ dotnet test
   }
   ```
 
-- **Erreur ID inconnu (404)** :
+- **Unknown ID Error (404)**:
   ```bash
   curl -i http://localhost:5000/api/players/9999
   ```
@@ -161,24 +161,24 @@ dotnet test
 
 ---
 
-### 5. Récupérer le ratio de victoires d'un joueur
-- **Méthode** : `GET`
-- **Route** : `/api/players/{id}/win-ratio`
-- **Requête** :
+### 5. Retrieve a Player's Win Ratio
+- **Method**: `GET`
+- **Route**: `/api/players/{id}/win-ratio`
+- **Request**:
   ```bash
   curl -s http://localhost:5000/api/players/65/win-ratio
   ```
-- **Réponse** :
+- **Response**:
   ```json
   { "id": 65, "winRatio": 0.8 }
   ```
 
 ---
 
-### 6. Ajouter un joueur
-- **Méthode** : `POST`
-- **Route** : `/api/players`
-- **Requête** :
+### 6. Create a Player
+- **Method**: `POST`
+- **Route**: `/api/players`
+- **Request**:
   ```bash
   curl -i -X POST http://localhost:5000/api/players -H "Content-Type: application/json" -d "{
     \"firstname\": \"Roger\",
@@ -196,56 +196,56 @@ dotnet test
     \"last\": [1, 1, 0, 1, 1]
   }"
   ```
-- **Réponse** (`201 Created` avec en-tête `Location` pointant vers `/api/players/{id}`) :
+- **Response** (`201 Created` with a `Location` header pointing to `/api/players/{id}`):
   ```json
   {"id":103,"firstname":"Roger","lastname":"Federer","shortname":"R.FED","sex":"M","country":{"picture":"https://tenisu.latelier.co/resources/Suisse.png","code":"SUI"},"picture":"https://example.com/federer.png","data":{"rank":5,"points":2000,"weight":85000,"height":185,"age":41,"last":[1,1,0,1,1]}}
   ```
 
 ---
 
-### 7. Supprimer un joueur
-- **Méthode** : `DELETE`
-- **Route** : `/api/players/{id}`
-- **Requête** :
+### 7. Delete a Player
+- **Method**: `DELETE`
+- **Route**: `/api/players/{id}`
+- **Request**:
   ```bash
   curl -i -X DELETE http://localhost:5000/api/players/103
   ```
-- **Réponse** :
+- **Response**:
   `HTTP/1.1 204 No Content`
 
 ---
 
-## ⚙️ Choix Techniques & Règles Métier
+## ⚙️ Technical Choices & Business Rules
 
-1. **InMemory & Thread-safety** :
-   - Le stockage en mémoire est géré par une `List<Player>` encapsulée dans un `lock` dans `InMemoryPlayerRepository`. Cela garantit qu'aucune écriture ou modification concurrente n'entraîne de corruption de données ou d'exceptions `InvalidOperationException`.
-2. **Calcul de l'IMC Moyen** :
-   - Les poids sont fournis en grammes et les tailles en cm dans le fichier JSON.
-   - Ils sont convertis respectivement en kg (`poids / 1000`) et en mètres (`taille / 100`) avant d'appliquer la formule : `IMC = kg / m²`.
-   - La moyenne des IMC individuels est ensuite arrondie à 2 décimales.
-3. **Calcul de la Médiane** :
-   - Si la liste triée des hauteurs a un nombre impair d'éléments, nous retournons l'élément du milieu.
-   - Si le nombre d'éléments est pair, nous prenons la moyenne des deux éléments centraux.
-4. **Calcul du Ratio par Pays & Gestion des Égalités** :
-   - Tous les matchs (`last`) des joueurs appartenant à un même pays sont agrégés.
-   - Le ratio est : `Total des victoires (1) / Total de matchs joués`.
-   - Si deux pays ont exactement le même ratio de victoires, le premier pays par ordre alphabétique de son code pays (ex: "SUI" avant "USA") est choisi comme gagnant.
-
----
-
-## 🌐 Déploiement Cloud
-
-Ce projet est prêt à être déployé sur des PaaS comme **Render**, **Railway** (avec détection automatique .NET), ou **Azure App Service** :
-- Le déploiement est **natif** (.NET Runtime standard).
-- La commande `dotnet publish -c Release` génère l'artefact compilé prêt à l'exécution.
-- La documentation interactive Swagger est activée en production à l'adresse `/swagger` pour simplifier la recette et les démos.
-- URL Déployée (Exemple de démo) : `https://tennis-stats-api-demo.azurewebsites.net/swagger` *(Placeholder)*
+1. **InMemory & Thread-safety**:
+   - The data is kept in-memory in a `List<Player>` wrapped with a `lock` statement in `InMemoryPlayerRepository`. This guarantees that concurrent writes/reads won't cause collection corruption or `InvalidOperationException`.
+2. **Average BMI Calculation**:
+   - Weight is supplied in grams and height in centimeters.
+   - They are converted to kg (`weight / 1000`) and meters (`height / 100`) before applying the formula: `BMI = kg / m²`.
+   - The average BMI is rounded to 2 decimal places.
+3. **Median Height Calculation**:
+   - If the sorted list of heights has an odd count, we return the middle element.
+   - If the count is even, we return the average of the two middle elements.
+4. **Country Win Ratio & Ties**:
+   - All matches (`last`) of all players belonging to the same country are aggregated.
+   - Win ratio is computed as: `Wins (1) / Total matches`.
+   - If multiple countries tie for the best win ratio, the winner is decided alphabetically based on the country code (e.g., "SUI" before "USA").
 
 ---
 
-## 🔮 Pistes d'Amélioration
+## 🌐 Cloud Deployment
 
-1. **Authentification** : Ajouter une authentification API Key ou JWT pour sécuriser l'ajout/suppression de joueurs en production.
-2. **Persistance réelle** : Remplacer l'implémentation `InMemoryPlayerRepository` par une implémentation Entity Framework Core (ex: PostgreSQL ou SQL Server) en tirant profit de l'injection de dépendances sur `IPlayerRepository`.
-3. **Pagination** : Ajouter des paramètres `page` et `pageSize` sur l'endpoint de récupération de liste pour gérer de larges volumes de joueurs.
-4. **Validation enrichie** : Intégrer FluentValidation pour séparer la logique de validation des DTOs.
+This project is ready to be deployed on PaaS providers like **Render**, **Railway** (using native .NET buildpack), or **Azure App Service**:
+- Standard, non-containerized .NET 10 deployment.
+- The `dotnet publish -c Release` command builds the ready-to-run release assets.
+- Swagger UI documentation is enabled in production on `/swagger` for easy testing.
+- Live App URL (Demo Example): `https://tennis-stats-api-demo.azurewebsites.net/swagger` *(Placeholder)*
+
+---
+
+## 🔮 Future Improvements
+
+1. **Authentication**: Add JWT or API Key authentication to protect write/delete operations in production.
+2. **Database Integration**: Swap `InMemoryPlayerRepository` with a real database context using Entity Framework Core (e.g., PostgreSQL) by implementing the `IPlayerRepository` interface.
+3. **Pagination**: Introduce `page` and `pageSize` parameters on query endpoints to handle large collections of players.
+4. **Enriched Validation**: Integrate FluentValidation for clean separate payload validation.
