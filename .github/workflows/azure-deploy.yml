@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: 'tennis-stats-api-demo'    # Remplacez par le nom de votre Azure Web App
+  AZURE_WEBAPP_NAME: 'tennis-stats-web02'    # Nom de votre Azure Web App
   DOTNET_VERSION: '10.0.x'                      # Version du SDK .NET 10
 
 jobs:
