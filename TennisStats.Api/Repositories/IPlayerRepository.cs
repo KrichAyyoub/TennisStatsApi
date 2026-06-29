@@ -9,6 +9,5 @@ namespace TennisStats.Api.Repositories
         Task<IEnumerable<Player>> GetAllAsync();
         Task<Player?> GetByIdAsync(int id);
         Task<Player> AddAsync(Player player);
-        Task<bool> DeleteAsync(int id);
     }
 }

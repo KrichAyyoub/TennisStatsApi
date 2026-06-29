@@ -105,21 +105,6 @@ namespace TennisStats.Api.Repositories
             }
         }
 
-        public Task<bool> DeleteAsync(int id)
-        {
-            lock (_lock)
-            {
-                var player = _players.FirstOrDefault(p => p.Id == id);
-                if (player != null)
-                {
-                    _players.Remove(player);
-                    _logger.LogInformation("Deleted player with ID {Id}", id);
-                    return Task.FromResult(true);
-                }
-                return Task.FromResult(false);
-            }
-        }
-
         private class PlayersContainer
         {
             public List<Player> Players { get; set; } = new();

@@ -81,22 +81,6 @@ namespace TennisStats.Tests.IntegrationTests
             Assert.Contains("99999 was not found", error.Message);
         }
 
-        [Fact]
-        public async Task HealthCheck_ShouldReturnOkStatus()
-        {
-            // Arrange
-            var client = _factory.CreateClient();
 
-            // Act
-            var response = await client.GetAsync("/health");
-
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            
-            var result = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
-            Assert.NotNull(result);
-            Assert.True(result.ContainsKey("status"));
-            Assert.Equal("ok", result["status"]);
-        }
     }
 }

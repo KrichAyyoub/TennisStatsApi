@@ -94,27 +94,6 @@ namespace TennisStats.Tests.Services
             Assert.Equal("Venus", result[4].Firstname);  // 1100 pts
         }
 
-        [Fact]
-        public async Task GetPlayersAsync_WithSexFilter_ShouldReturnFilteredPlayers()
-        {
-            // Arrange
-            var mockPlayers = GetMockPlayers();
-            _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(mockPlayers);
-
-            // Act
-            var result = (await _playerService.GetPlayersAsync("F")).ToList();
-
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.All(result, p => Assert.Equal("F", p.Sex));
-        }
-
-        [Fact]
-        public async Task GetPlayersAsync_WithInvalidSexFilter_ShouldThrowValidationException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ValidationException>(() => _playerService.GetPlayersAsync("Invalid"));
-        }
 
         [Fact]
         public async Task GetPlayerByIdAsync_WithValidId_ShouldReturnPlayer()
@@ -302,43 +281,5 @@ namespace TennisStats.Tests.Services
             Assert.Equal(1.0, result.CountryWithBestWinRatio.WinRatio);
         }
 
-        [Fact]
-        public async Task DeletePlayerAsync_WithValidId_ShouldCallRepositoryDelete()
-        {
-            // Arrange
-            _mockRepository.Setup(r => r.DeleteAsync(1)).ReturnsAsync(true);
-
-            // Act
-            var result = await _playerService.DeletePlayerAsync(1);
-
-            // Assert
-            Assert.True(result);
-            _mockRepository.Verify(r => r.DeleteAsync(1), Times.Once);
-        }
-
-        [Fact]
-        public async Task DeletePlayerAsync_WithInvalidId_ShouldThrowPlayerNotFoundException()
-        {
-            // Arrange
-            _mockRepository.Setup(r => r.DeleteAsync(99)).ReturnsAsync(false);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<PlayerNotFoundException>(() => _playerService.DeletePlayerAsync(99));
-        }
-
-        [Fact]
-        public async Task GetPlayerWinRatioAsync_WithValidId_ShouldCalculateIndividualRatioCorrectly()
-        {
-            // Arrange
-            var mockPlayers = GetMockPlayers();
-            var target = mockPlayers[2]; // Stan (SUI): 1,1,0 -> 2 wins / 3 matches = 0.67
-            _mockRepository.Setup(r => r.GetByIdAsync(3)).ReturnsAsync(target);
-
-            // Act
-            var result = await _playerService.GetPlayerWinRatioAsync(3);
-
-            // Assert
-            Assert.Equal(0.67, result);
-        }
     }
 }

@@ -18,19 +18,9 @@ namespace TennisStats.Api.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<PlayerResponseDto>> GetPlayersAsync(string? sex = null)
+        public async Task<IEnumerable<PlayerResponseDto>> GetPlayersAsync()
         {
             var players = await _repository.GetAllAsync();
-
-            if (!string.IsNullOrEmpty(sex))
-            {
-                var upperSex = sex.Trim().ToUpperInvariant();
-                if (upperSex != "M" && upperSex != "F")
-                {
-                    throw new ValidationException("Sex query parameter must be 'M' or 'F'.");
-                }
-                players = players.Where(p => p.Sex.Equals(upperSex, StringComparison.OrdinalIgnoreCase));
-            }
 
             // Sort by points descending
             return players
@@ -82,33 +72,7 @@ namespace TennisStats.Api.Services
             return MapToDto(createdPlayer);
         }
 
-        public async Task<bool> DeletePlayerAsync(int id)
-        {
-            var deleted = await _repository.DeleteAsync(id);
-            if (!deleted)
-            {
-                throw new PlayerNotFoundException(id);
-            }
-            return true;
-        }
 
-        public async Task<double> GetPlayerWinRatioAsync(int id)
-        {
-            var player = await _repository.GetByIdAsync(id);
-            if (player == null)
-            {
-                throw new PlayerNotFoundException(id);
-            }
-
-            if (player.Data.Last == null || player.Data.Last.Count == 0)
-            {
-                return 0.0;
-            }
-
-            double wins = player.Data.Last.Count(x => x == 1);
-            double total = player.Data.Last.Count;
-            return Math.Round(wins / total, 2);
-        }
 
         public async Task<StatsResponseDto> GetStatsAsync()
         {

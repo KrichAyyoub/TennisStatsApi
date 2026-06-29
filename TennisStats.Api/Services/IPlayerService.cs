@@ -6,11 +6,9 @@ namespace TennisStats.Api.Services
 {
     public interface IPlayerService
     {
-        Task<IEnumerable<PlayerResponseDto>> GetPlayersAsync(string? sex = null);
+        Task<IEnumerable<PlayerResponseDto>> GetPlayersAsync();
         Task<PlayerResponseDto> GetPlayerByIdAsync(int id);
         Task<PlayerResponseDto> CreatePlayerAsync(CreatePlayerRequestDto request);
         Task<StatsResponseDto> GetStatsAsync();
-        Task<bool> DeletePlayerAsync(int id);
-        Task<double> GetPlayerWinRatioAsync(int id);
     }
 }

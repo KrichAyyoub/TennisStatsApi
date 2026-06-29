@@ -62,7 +62,7 @@ TennisStats.Tests/                     # Testing project
 
 ## 🧪 Running Tests
 
-To run the complete suite of 25 unit and integration tests:
+To run the complete suite of 18 unit and integration tests:
 ```bash
 dotnet test
 ```
@@ -71,25 +71,9 @@ dotnet test
 
 ## 📞 API Endpoints & Curl Examples
 
-### 1. Healthcheck
-- **Method**: `GET`
-- **Route**: `/health`
-- **Description**: Returns the API health status.
-- **Request**:
-  ```bash
-  curl -s http://localhost:5000/health
-  ```
-- **Response**:
-  ```json
-  {"status":"ok"}
-  ```
-
----
-
-### 2. Retrieve All Players (Sorted by points descending)
+### 1. Retrieve All Players (Sorted by points descending)
 - **Method**: `GET`
 - **Route**: `/api/players`
-- **Query Parameters** (Optional): `sex` (values: `M` or `F`)
 - **Request**:
   ```bash
   curl -s http://localhost:5000/api/players
@@ -112,7 +96,7 @@ dotnet test
 
 ---
 
-### 3. Retrieve Global Statistics
+### 2. Retrieve Global Statistics
 - **Method**: `GET`
 - **Route**: `/api/players/stats` *(or via the alias `/api/stats`)*
 - **Request**:
@@ -130,7 +114,7 @@ dotnet test
 
 ---
 
-### 4. Retrieve a Player by ID
+### 3. Retrieve a Player by ID
 - **Method**: `GET`
 - **Route**: `/api/players/{id}`
 - **Request**:
@@ -161,21 +145,7 @@ dotnet test
 
 ---
 
-### 5. Retrieve a Player's Win Ratio
-- **Method**: `GET`
-- **Route**: `/api/players/{id}/win-ratio`
-- **Request**:
-  ```bash
-  curl -s http://localhost:5000/api/players/65/win-ratio
-  ```
-- **Response**:
-  ```json
-  { "id": 65, "winRatio": 0.8 }
-  ```
-
----
-
-### 6. Create a Player
+### 4. Create a Player
 - **Method**: `POST`
 - **Route**: `/api/players`
 - **Request**:
@@ -200,18 +170,6 @@ dotnet test
   ```json
   {"id":103,"firstname":"Roger","lastname":"Federer","shortname":"R.FED","sex":"M","country":{"picture":"https://tenisu.latelier.co/resources/Suisse.png","code":"SUI"},"picture":"https://example.com/federer.png","data":{"rank":5,"points":2000,"weight":85000,"height":185,"age":41,"last":[1,1,0,1,1]}}
   ```
-
----
-
-### 7. Delete a Player
-- **Method**: `DELETE`
-- **Route**: `/api/players/{id}`
-- **Request**:
-  ```bash
-  curl -i -X DELETE http://localhost:5000/api/players/103
-  ```
-- **Response**:
-  `HTTP/1.1 204 No Content`
 
 ---
 

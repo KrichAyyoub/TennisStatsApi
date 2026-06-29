@@ -33,10 +33,10 @@ namespace TennisStats.Tests.Controllers
                 new() { Id = 1, Firstname = "Novak" },
                 new() { Id = 2, Firstname = "Rafael" }
             };
-            _mockService.Setup(s => s.GetPlayersAsync(null)).ReturnsAsync(expectedPlayers);
+            _mockService.Setup(s => s.GetPlayersAsync()).ReturnsAsync(expectedPlayers);
 
             // Act
-            var result = await _controller.GetAll(null);
+            var result = await _controller.GetAll();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -125,18 +125,6 @@ namespace TennisStats.Tests.Controllers
             Assert.IsType<SerializableError>(badRequestResult.Value);
         }
 
-        [Fact]
-        public async Task Delete_ShouldReturnNoContent()
-        {
-            // Arrange
-            _mockService.Setup(s => s.DeletePlayerAsync(1)).ReturnsAsync(true);
 
-            // Act
-            var result = await _controller.Delete(1);
-
-            // Assert
-            Assert.IsType<NoContentResult>(result);
-            _mockService.Verify(s => s.DeletePlayerAsync(1), Times.Once);
-        }
     }
 }
