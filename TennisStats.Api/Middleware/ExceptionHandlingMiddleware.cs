@@ -27,8 +27,25 @@ namespace TennisStats.Api.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while processing the request.");
+                LogException(ex);
                 await HandleExceptionAsync(context, ex);
+            }
+        }
+
+        private void LogException(Exception ex)
+        {
+            switch (ex)
+            {
+                case PlayerNotFoundException:
+                    _logger.LogWarning("Player not found exception: {Message}", ex.Message);
+                    break;
+                case ValidationException:
+                case ArgumentException:
+                    _logger.LogWarning("Validation or argument exception: {Message}", ex.Message);
+                    break;
+                default:
+                    _logger.LogError(ex, "An unexpected error occurred while processing the request.");
+                    break;
             }
         }
 
